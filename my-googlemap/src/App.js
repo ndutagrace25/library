@@ -1,15 +1,34 @@
 import React, { Component } from 'react';
 import {Map, InfoWindow, Marker, GoogleApiWrapper} from 'google-maps-react';
-import backetsData from './data/backets.json';
+import bucketsData from './data/buckets.json';
 
 export class MapContainer extends Component {
   
-  state = { 
-    selectedBacket: null,
+  constructor(props){
+    super(props);
+    this.state = {
+      selectedBucket: null
+         
+    }
+  }
+   onClick (key) {
+   
+    this.state.selectedBucket[key] = bucketsData;
     
+      this.setState({
+        selectedBucket:  bucketsData
+      })
+    
+    
+    console.log(this.state.selectedBucket);
    }
-   onClick = (event) => {
-    this.setState({selectedBacket: this.state.selectedBacket})
+
+  onCloseClick = () => {
+    console.log("I am clicked");
+    this.setState({
+      
+      selectedBucket: null
+    });
   }
   
   render() { 
@@ -20,24 +39,26 @@ export class MapContainer extends Component {
       height: '100%'
     }
     
-    // const [selectedBacket, setSelectedBacket] = useState(null);
+      // console.log(bucketsData.buckets[0]);
+    
+    // console.log(bucketsData.buckets.name);
+    // const [selectedBucket, setSelectedBucket] = useState(null);
     return ( 
+      
       <Map initialCenter= {{ lat: 0.0074, lng: 37.0722 }} style = {style} google={this.props.google} zoom={14}>
-        {backetsData.backets.map((backet) =>  (<Marker key={backet.id} position={{ lat: backet.latitude, lng: backet.longitude }} onClick ={this.onClick(backet)} icon={{ url: '/mawingu.svg',
+        {bucketsData.map((bucket) =>  (<Marker key={bucket.id} position={{ lat: bucket.latitude, lng: bucket.longitude }} onClick ={(bucket) =>this.onClick(bucket)} icon={{ url: '/mawingu.svg',
          scaledSize: new window.google.maps.Size(30,30)
        }}/>))}
-        {this.state.selectedBacket && (
-          <InfoWindow position={{ lat: this.state.selectedBacket.latitude, lng: this.state.selectedBacket.longitude }} onCloseClick={()=>this.state.selectedBacket(null)}>
+       
+        {this.state.selectedBucket && (
+          <InfoWindow position={{ lat: parseFloat(this.state.selectedBucket.latitude), lng: parseFloat(this.state.selectedBucket.longitude) }} onCloseClick={this.onCloseClick} visible={true}>
           <div>
-          <h2>BKT {this.state.selectedBacket.name}</h2>
+          <h2>BKT {this.state.selectedBucket.name}</h2>
+          <button className="btn btn-primary btn-sm">Details</button>
           </div>
       </InfoWindow>
         )}
-        <InfoWindow >
-            <div>
-              
-            </div>
-        </InfoWindow>
+      
       </Map>
      );
   }
